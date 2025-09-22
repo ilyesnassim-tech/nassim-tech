@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Multi Générateur</title>
+  <style>
+    :root{--bg:#0b1220;--card:#141d2f;--accent:#4ade80;--muted:#9fb3c8}
+    *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#030711,#0b1220);color:#e6f2ff;display:flex;align-items:center;justify-content:center;padding:28px}
+    .wrap{width:100%;max-width:920px;text-align:center}
+    header{margin-bottom:20px;animation:fadeIn 1.2s ease}
+    h1{margin:0;font-size:28px;color:var(--accent)}
+    p{color:var(--muted)}
+
+    .card{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);margin-bottom:20px;animation:popIn .8s ease}
+    select,button{padding:10px 14px;border-radius:8px;border:none;font-weight:600}
+    select{background:#1f2a44;color:#fff}
+    button{background:var(--accent);cursor:pointer;transition:transform .2s}
+    button:hover{transform:scale(1.05)}
+
+    .output{margin-top:16px;padding:14px;border-radius:10px;background:rgba(255,255,255,.05);min-height:100px;animation:fadeIn .6s ease}
+
+    .icon{font-size:22px;margin-right:6px}
+
+    footer{margin-top:18px;font-size:13px;color:var(--muted)}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🌟 مولد متعدد — Multi Générateur</h1>
+      <p>اختر نوع المولد 👇 — Choisis le type de générateur 👇</p>
+    </header>
+
+    <div class="card">
+      <select id="generatorType">
+        <option value="name">👤 أسماء / Noms</option>
+        <option value="joke">😂 نكت / Blagues</option>
+        <option value="quote">💡 اقتباسات / Citations</option>
+        <option value="password">🔑 كلمات سر / Mots de passe</option>
+        <option value="business">💼 أفكار بزنس / Idées business</option>
+        <option value="food">🍕 أطباق / Plats</option>
+        <option value="excuse">🙈 أعذار / Excuses</option>
+      </select>
+      <button onclick="generate()">✨ Générer / توليد</button>
+      <div class="output" id="output"></div>
+    </div>
+
+    <footer>© 2025 Ilyes — موقع توليد متعدد</footer>
+  </div>
+
+  <script>
+    const data = {
+      name:["NassimX","LinaSky","Darko77","AyaMoon"],
+      joke:["Pourquoi les programmeurs confondent Halloween et Noël ? Parce que OCT 31 == DEC 25.","الكمبيوتر كيطيح يقول: Crash!"],
+      quote:["الحياة قصيرة فلا تضيعها","Le succès est un voyage, pas une destination"],
+      password:["A9f$zT1!","XyP@2025*","M0on#Star9"],
+      business:["خدمة تصميم مواقع","Dropshipping","Application mobile للطلاب"],
+      food:["Pizza 4 fromages","Couscous بالحمص","Burger maison"],
+      excuse:["النت طاح","Mon chat a mangé mon devoir","كان عندي عرس"]
+    };
+
+    function generate(){
+      const type=document.getElementById('generatorType').value;
+      const items=data[type];
+      const choice=items[Math.floor(Math.random()*items.length)];
+      document.getElementById('output').innerHTML = `<span class="icon">✨</span>${choice}`;
+    }
+  </script>
+</body>
+</html>
