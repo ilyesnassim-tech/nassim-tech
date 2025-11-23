@@ -1,130 +1,256 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Astronomie Explorer</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flash Cours DZ</title>
+
+<!-- Manifest pour PWA -->
+<link rel="manifest" href="data:application/manifest+json,{&quot;name&quot;:&quot;Flash Cours DZ&quot;,&quot;short_name&quot;:&quot;FlashCours&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#1c0033&quot;,&quot;theme_color&quot;:&quot;#bb33ff&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;icon-192.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},{&quot;src&quot;:&quot;icon-512.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}]}">
+<meta name="theme-color" content="#bb33ff">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
 :root{
-  --bg:#070014;
-  --card:#0f0125;
-  --accent:#7b2fff;
-  --accent2:#c86bff;
-  --text:#ffffff;
+  --bg:#1c0033;
+  --card:#1a002d;
+  --accent:#bb33ff;
+  --accent-dark:#6a00ff;
+  --hover:#9a00cc;
+  --muted:#d1c0ff;
 }
+*{box-sizing:border-box;}
 body{
   margin:0;
-  font-family:"Inter", sans-serif;
-  background: radial-gradient(circle at center, #1a0033, #070014);
-  color:var(--text);
-  overflow:hidden;
+  font-family:'Inter', sans-serif;
+  background: linear-gradient(270deg,#1c0033,#330066,#1c0033);
+  background-size:600% 600%;
+  animation: gradientBG 15s ease infinite;
+  color:#fff;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  overflow:hidden;
+}
+@keyframes gradientBG{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 #app{
-  width:100%; max-width:450px; text-align:center; position:relative;
+  width:100%; max-width:420px; padding-bottom:80px;
 }
+header{text-align:center;margin:12px 0;}
 h1{
   margin:0;
-  font-size:2.2rem;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-size:2rem;
+  text-shadow:0 4px 12px rgba(0,0,0,0.7);
+  background: linear-gradient(90deg, #bb33ff, #6a00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.screen{display:none; opacity:0; transform:translateY(20px); transition:0.5s;}
-.screen.active{display:block; opacity:1; transform:translateY(0);}
-.category{
+.screen{
+  display:none;
+  opacity:0;
+  transform:translateY(30px) scale(0.95);
+  transition:0.5s;
+}
+.screen.active{
+  display:block;
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+.menu-box{
   background:var(--card);
-  padding:18px;
-  margin:14px 0;
-  border-radius:18px;
-  cursor:pointer;
-  font-size:1.2rem;
-  transition:0.3s;
-  box-shadow:0 8px 20px rgba(0,0,0,0.6);
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 8px 25px rgba(0,0,0,0.8);
+  animation: fadeIn 0.8s ease;
 }
-.category:hover{
-  background:#2b0055;
-  transform:scale(1.05);
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
 }
-.item{
-  background:rgba(255,255,255,0.05);
-  padding:14px;
-  margin:10px 0;
+.btn{
+  display:block;
+  width:80%;
+  max-width:220px;
+  margin:15px auto;
+  padding:16px 20px;
   border-radius:16px;
+  background: linear-gradient(90deg,var(--accent), var(--accent-dark));
+  color:#fff;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  font-size:1.1rem;
+  transition: all 0.3s ease;
+  box-shadow:0 6px 18px rgba(0,0,0,0.7);
+}
+.btn:hover{
+  transform:scale(1.08);
+  background:linear-gradient(90deg,var(--hover), var(--accent-dark));
+  box-shadow:0 8px 22px rgba(0,0,0,0.85);
+}
+.list-item{
+  background:rgba(255,255,255,0.05);
+  margin:12px 0;
+  padding:16px;
+  border-radius:16px;
+  cursor:pointer;
+  transition: all 0.3s ease;
+  box-shadow:0 3px 12px rgba(0,0,0,0.5);
+  backdrop-filter:blur(3px);
+}
+.list-item:hover{
+  background:rgba(187,51,255,0.25);
+  transform:translateX(8px);
+  box-shadow:0 6px 18px rgba(187,51,255,0.6);
+}
+.back-btn{
+  margin-top:14px;
+  display:inline-block;
+  color:var(--accent);
+  cursor:pointer;
+  font-weight:700;
+  transition:0.3s;
+}
+.back-btn:hover{
+  color:var(--hover);
+  text-decoration:underline;
+}
+.page{
+  background:rgba(0,0,0,0.2);
+  margin:12px 0;
+  padding:14px;
+  border-radius:12px;
   text-align:left;
-  box-shadow:0 4px 14px rgba(0,0,0,0.5);
-}
-.item img{
-  width:100%; border-radius:14px; margin-top:10px;
-}
-.back{
-  margin-top:14px; color:var(--accent2); cursor:pointer; font-weight:700;
+  line-height:1.4rem;
 }
 .pub{
   position:fixed;
-  bottom:10px;
-  width:100%; max-width:450px;
+  bottom:20px;
+  width:100%;
+  max-width:420px;
+  text-align:center;
   padding:10px;
-  background:rgba(255,255,255,0.07);
-  backdrop-filter:blur(6px);
-  border-radius:12px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
   font-size:0.8rem;
-  box-shadow:0 -3px 12px rgba(0,0,0,0.6);
+  box-shadow:0 -2px 12px rgba(0,0,0,0.5);
+  border-radius:14px;
+  backdrop-filter:blur(6px);
+  z-index:100;
 }
 </style>
 </head>
 <body>
 <div id="app">
-  <h1>Astronomie</h1>
+<header><h1>Mar7ba bikom</h1></header>
 
-  <section id="home" class="screen active">
-    <div class="category" onclick="openCat('galaxies')">🌌 Galaxies</div>
-    <div class="category" onclick="openCat('etoiles')">⭐ Étoiles</div>
-    <div class="category" onclick="openCat('trous')">🕳️ Trous Noirs</div>
-  </section>
+<!-- Accueil -->
+<section id="home" class="screen active">
+  <div class="menu-box">
+    <button class="btn" onclick="showScreen('semester')">Commencer</button>
+  </div>
+</section>
 
-  <section id="content" class="screen">
-    <h2 id="cat-title"></h2>
-    <div id="items"></div>
-    <div class="back" onclick="goBack()">← Retour</div>
-  </section>
+<!-- Semestre -->
+<section id="semester" class="screen">
+  <div class="menu-box">
+    <h2>Choisis le semestre</h2>
+    <div class="list-item" onclick="selectSemester('3')">Semestre 3</div>
+    <div class="list-item" onclick="selectSemester('4')">Semestre 4</div>
+    <div class="back-btn" onclick="showScreen('home')">← Retour</div>
+  </div>
+</section>
 
-  <div class="pub">Développé par Ilyes • Ads intégrées</div>
+<!-- Modules -->
+<section id="module" class="screen">
+  <div class="menu-box">
+    <h2>Choisis le module</h2>
+    <div id="module-list"></div>
+    <div class="back-btn" onclick="showScreen('semester')">← Retour</div>
+  </div>
+</section>
+
+<!-- Pages de cours -->
+<section id="pages" class="screen">
+  <div class="menu-box">
+    <h2 id="module-title"></h2>
+    <div id="page-list"></div>
+    <div class="back-btn" onclick="showScreen('module')">← Retour</div>
+  </div>
+</section>
+
+<div class="pub">Développé par Ilyes & Nassim</div>
 </div>
 
 <script>
-const data={
-  galaxies:[
-    {title:"Galaxie d'Andromède", desc:"La galaxie la plus proche de la Voie lactée.", img:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Andromeda_Galaxy_(with_h-alpha).jpg"},
-    {title:"Voie Lactée", desc:"Notre galaxie en forme de spirale barrée.", img:"https://upload.wikimedia.org/wikipedia/commons/6/6e/Milky_Way_Arch.jpg"}
-  ],
-  etoiles:[
-    {title:"Soleil", desc:"Notre étoile, source de toute énergie.", img:"https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg"},
-    {title:"Supergéantes rouges", desc:"Des étoiles massives en fin de vie.", img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Betelgeuse_star.jpg"}
-  ],
-  trous:[
-    {title:"Trou Noir Stellaire", desc:"Formé après l'effondrement d'une étoile massive.", img:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Black_hole_-_Messier_87_crop_max_res.jpg"},
-    {title:"Sagittarius A*", desc:"Le trou noir supermassif au centre de la Voie lactée.", img:"https://upload.wikimedia.org/wikipedia/commons/2/20/Sagittarius_A*.jpg"}
-  ]
+'use strict';
+
+// Modules et 5 pages fictives
+const modules = {
+  "Théorie des graphes": ["Page 1 : Introduction aux graphes","Page 2 : Définitions","Page 3 : Types de graphes","Page 4 : Algorithmes","Page 5 : Exemples"],
+  "ASD3": ["Page 1 : Introduction","Page 2 : Structures","Page 3 : Algorithmes","Page 4 : Analyse","Page 5 : Exercices"],
+  "Méthodes numériques": ["Page 1 : Bases","Page 2 : Interpolation","Page 3 : Résolution","Page 4 : Approximation","Page 5 : Exercices"],
+  "Logique mathématique": ["Page 1 : Propositions","Page 2 : Connecteurs","Page 3 : Tableaux de vérité","Page 4 : Raisonnement","Page 5 : Exercices"],
+  "Systèmes d’information": ["Page 1 : Concepts","Page 2 : Bases de données","Page 3 : Réseaux","Page 4 : Gestion","Page 5 : Exercices"],
+  "Architecture des ordinateurs": ["Page 1 : Processeurs","Page 2 : Mémoire","Page 3 : Entrées/Sorties","Page 4 : Bus","Page 5 : Exercices"]
 };
-function openCat(cat){
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('content').classList.add('active');
-  document.getElementById('cat-title').textContent=cat.toUpperCase();
-  const container=document.getElementById('items');
-  container.innerHTML="";
-  data[cat].forEach(obj=>{
-    container.innerHTML+=`<div class='item'><h3>${obj.title}</h3><p>${obj.desc}</p><img src='${obj.img}'/></div>`;
-  });
+
+let currentSemester=null;
+
+// Navigation
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
-function goBack(){
-  document.getElementById('content').classList.remove('active');
-  document.getElementById('home').classList.add('active');
+
+// Sélection du semestre
+function selectSemester(sem){
+  currentSemester=sem;
+  const moduleList = document.getElementById('module-list');
+  moduleList.innerHTML = '';
+  Object.keys(modules).forEach(m=>{
+    const div = document.createElement('div');
+    div.className='list-item';
+    div.textContent = m;
+    div.onclick = ()=> showPages(m);
+    moduleList.appendChild(div);
+  });
+  showScreen('module');
+}
+
+// Affichage des pages
+function showPages(moduleName){
+  document.getElementById('module-title').textContent = moduleName;
+  const pageList = document.getElementById('page-list');
+  pageList.innerHTML = '';
+  modules[moduleName].forEach(p=>{
+    const div = document.createElement('div');
+    div.className='page';
+    div.textContent = p;
+    pageList.appendChild(div);
+  });
+  showScreen('pages');
+}
+
+// Service Worker pour PWA
+if ('serviceWorker' in navigator){
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
+    const cacheName="flash-cours-v1";
+    const filesToCache=["/"];
+    self.addEventListener("install", e=>{e.waitUntil(caches.open(cacheName).then(c=>c.addAll(filesToCache)))});
+    self.addEventListener("fetch", e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});
+  `],{type:'application/javascript'})));
 }
 </script>
 </body>
 </html>
+
 
