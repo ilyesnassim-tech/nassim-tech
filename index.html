@@ -1,77 +1,130 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Multi Générateur</title>
-  <style>
-    :root{--bg:#0b1220;--card:#141d2f;--accent:#4ade80;--muted:#9fb3c8}
-    *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#030711,#0b1220);color:#e6f2ff;display:flex;align-items:center;justify-content:center;padding:28px}
-    .wrap{width:100%;max-width:920px;text-align:center}
-    header{margin-bottom:20px;animation:fadeIn 1.2s ease}
-    h1{margin:0;font-size:28px;color:var(--accent)}
-    p{color:var(--muted)}
-
-    .card{background:var(--card);padding:20px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.6);margin-bottom:20px;animation:popIn .8s ease}
-    select,button{padding:10px 14px;border-radius:8px;border:none;font-weight:600}
-    select{background:#1f2a44;color:#fff}
-    button{background:var(--accent);cursor:pointer;transition:transform .2s}
-    button:hover{transform:scale(1.05)}
-
-    .output{margin-top:16px;padding:14px;border-radius:10px;background:rgba(255,255,255,.05);min-height:100px;animation:fadeIn .6s ease}
-
-    .icon{font-size:22px;margin-right:6px}
-
-    footer{margin-top:18px;font-size:13px;color:var(--muted)}
-
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Astronomie Explorer</title>
+<style>
+:root{
+  --bg:#070014;
+  --card:#0f0125;
+  --accent:#7b2fff;
+  --accent2:#c86bff;
+  --text:#ffffff;
+}
+body{
+  margin:0;
+  font-family:"Inter", sans-serif;
+  background: radial-gradient(circle at center, #1a0033, #070014);
+  color:var(--text);
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+#app{
+  width:100%; max-width:450px; text-align:center; position:relative;
+}
+h1{
+  margin:0;
+  font-size:2.2rem;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.screen{display:none; opacity:0; transform:translateY(20px); transition:0.5s;}
+.screen.active{display:block; opacity:1; transform:translateY(0);}
+.category{
+  background:var(--card);
+  padding:18px;
+  margin:14px 0;
+  border-radius:18px;
+  cursor:pointer;
+  font-size:1.2rem;
+  transition:0.3s;
+  box-shadow:0 8px 20px rgba(0,0,0,0.6);
+}
+.category:hover{
+  background:#2b0055;
+  transform:scale(1.05);
+}
+.item{
+  background:rgba(255,255,255,0.05);
+  padding:14px;
+  margin:10px 0;
+  border-radius:16px;
+  text-align:left;
+  box-shadow:0 4px 14px rgba(0,0,0,0.5);
+}
+.item img{
+  width:100%; border-radius:14px; margin-top:10px;
+}
+.back{
+  margin-top:14px; color:var(--accent2); cursor:pointer; font-weight:700;
+}
+.pub{
+  position:fixed;
+  bottom:10px;
+  width:100%; max-width:450px;
+  padding:10px;
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(6px);
+  border-radius:12px;
+  font-size:0.8rem;
+  box-shadow:0 -3px 12px rgba(0,0,0,0.6);
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h2 class="brand">Nassim-Tech</h2>
-      <h1>🌟 مولد متعدد — Multi Générateur</h1>
-      <p>اختر نوع المولد 👇 — Choisis le type de générateur 👇</p>
-    </header>
+<div id="app">
+  <h1>Astronomie</h1>
 
-    <div class="card">
-      <select id="generatorType">
-        <option value="name">👤 أسماء / Noms</option>
-        <option value="joke">😂 نكت / Blagues</option>
-        <option value="quote">💡 اقتباسات / Citations</option>
-        <option value="password">🔑 كلمات سر / Mots de passe</option>
-        <option value="business">💼 أفكار بزنس / Idées business</option>
-        <option value="food">🍕 أطباق / Plats</option>
-        <option value="excuse">🙈 أعذار / Excuses</option>
-      </select>
-      <button onclick="generate()">✨ Générer / توليد</button>
-      <div class="output" id="output"></div>
-    </div>
+  <section id="home" class="screen active">
+    <div class="category" onclick="openCat('galaxies')">🌌 Galaxies</div>
+    <div class="category" onclick="openCat('etoiles')">⭐ Étoiles</div>
+    <div class="category" onclick="openCat('trous')">🕳️ Trous Noirs</div>
+  </section>
 
-    <footer>© 2025 Ilyes — موقع توليد متعدد</footer>
-  </div>
+  <section id="content" class="screen">
+    <h2 id="cat-title"></h2>
+    <div id="items"></div>
+    <div class="back" onclick="goBack()">← Retour</div>
+  </section>
 
-  <script>
-    const data = {
-      name:["NassimX","LinaSky","Darko77","AyaMoon"],
-      joke:["Pourquoi les programmeurs confondent Halloween et Noël ? Parce que OCT 31 == DEC 25.","الكمبيوتر كيطيح يقول: Crash!"],
-      quote:["الحياة قصيرة فلا تضيعها","Le succès est un voyage, pas une destination"],
-      password:["A9f$zT1!","XyP@2025*","M0on#Star9"],
-      business:["خدمة تصميم مواقع","Dropshipping","Application mobile للطلاب"],
-      food:["Pizza 4 fromages","Couscous بالحمص","Burger maison"],
-      excuse:["النت طاح","Mon chat a mangé mon devoir","كان عندي عرس"]
-    };
+  <div class="pub">Développé par Ilyes • Ads intégrées</div>
+</div>
 
-    function generate(){
-      const type=document.getElementById('generatorType').value;
-      const items=data[type];
-      const choice=items[Math.floor(Math.random()*items.length)];
-      document.getElementById('output').innerHTML = `<span class="icon">✨</span>${choice}`;
-    }
-  </script>
+<script>
+const data={
+  galaxies:[
+    {title:"Galaxie d'Andromède", desc:"La galaxie la plus proche de la Voie lactée.", img:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Andromeda_Galaxy_(with_h-alpha).jpg"},
+    {title:"Voie Lactée", desc:"Notre galaxie en forme de spirale barrée.", img:"https://upload.wikimedia.org/wikipedia/commons/6/6e/Milky_Way_Arch.jpg"}
+  ],
+  etoiles:[
+    {title:"Soleil", desc:"Notre étoile, source de toute énergie.", img:"https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg"},
+    {title:"Supergéantes rouges", desc:"Des étoiles massives en fin de vie.", img:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Betelgeuse_star.jpg"}
+  ],
+  trous:[
+    {title:"Trou Noir Stellaire", desc:"Formé après l'effondrement d'une étoile massive.", img:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Black_hole_-_Messier_87_crop_max_res.jpg"},
+    {title:"Sagittarius A*", desc:"Le trou noir supermassif au centre de la Voie lactée.", img:"https://upload.wikimedia.org/wikipedia/commons/2/20/Sagittarius_A*.jpg"}
+  ]
+};
+function openCat(cat){
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('content').classList.add('active');
+  document.getElementById('cat-title').textContent=cat.toUpperCase();
+  const container=document.getElementById('items');
+  container.innerHTML="";
+  data[cat].forEach(obj=>{
+    container.innerHTML+=`<div class='item'><h3>${obj.title}</h3><p>${obj.desc}</p><img src='${obj.img}'/></div>`;
+  });
+}
+function goBack(){
+  document.getElementById('content').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+}
+</script>
 </body>
 </html>
 
