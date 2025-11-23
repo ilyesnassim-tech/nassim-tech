@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flash Cours DZ</title>
 
-<!-- Manifest pour PWA -->
-<link rel="manifest" href="data:application/manifest+json,{&quot;name&quot;:&quot;Flash Cours DZ&quot;,&quot;short_name&quot;:&quot;FlashCours&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#1c0033&quot;,&quot;theme_color&quot;:&quot;#bb33ff&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;icon-192.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},{&quot;src&quot;:&quot;icon-512.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}]}">
 <meta name="theme-color" content="#bb33ff">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +17,6 @@
   --accent:#bb33ff;
   --accent-dark:#6a00ff;
   --hover:#9a00cc;
-  --muted:#d1c0ff;
 }
 *{box-sizing:border-box;}
 body{
@@ -131,6 +128,22 @@ h1{
   text-align:left;
   line-height:1.4rem;
 }
+.quiz-btn{
+  margin:10px 0;
+  display:block;
+  background:linear-gradient(90deg,#ff6600,#ff3300);
+  padding:12px 16px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+  color:#fff;
+  transition:0.3s;
+}
+.quiz-btn:hover{
+  transform:scale(1.05);
+  background:linear-gradient(90deg,#ff3300,#ff6600);
+}
 .pub{
   position:fixed;
   bottom:20px;
@@ -152,14 +165,12 @@ h1{
 <div id="app">
 <header><h1>Mar7ba bikom</h1></header>
 
-<!-- Accueil -->
 <section id="home" class="screen active">
   <div class="menu-box">
     <button class="btn" onclick="showScreen('semester')">Commencer</button>
   </div>
 </section>
 
-<!-- Semestre -->
 <section id="semester" class="screen">
   <div class="menu-box">
     <h2>Choisis le semestre</h2>
@@ -169,7 +180,6 @@ h1{
   </div>
 </section>
 
-<!-- Modules -->
 <section id="module" class="screen">
   <div class="menu-box">
     <h2>Choisis le module</h2>
@@ -178,11 +188,11 @@ h1{
   </div>
 </section>
 
-<!-- Pages de cours -->
 <section id="pages" class="screen">
   <div class="menu-box">
     <h2 id="module-title"></h2>
     <div id="page-list"></div>
+    <button class="quiz-btn" onclick="payQuiz()">Accéder au quiz (200 DA)</button>
     <div class="back-btn" onclick="showScreen('module')">← Retour</div>
   </div>
 </section>
@@ -193,57 +203,70 @@ h1{
 <script>
 'use strict';
 
-// Modules et 5 pages fictives
+// Modules et pages
 const modules = {
-  "Théorie des graphes": ["Page 1 : Introduction aux graphes","Page 2 : Définitions","Page 3 : Types de graphes","Page 4 : Algorithmes","Page 5 : Exemples"],
-  "ASD3": ["Page 1 : Introduction","Page 2 : Structures","Page 3 : Algorithmes","Page 4 : Analyse","Page 5 : Exercices"],
-  "Méthodes numériques": ["Page 1 : Bases","Page 2 : Interpolation","Page 3 : Résolution","Page 4 : Approximation","Page 5 : Exercices"],
-  "Logique mathématique": ["Page 1 : Propositions","Page 2 : Connecteurs","Page 3 : Tableaux de vérité","Page 4 : Raisonnement","Page 5 : Exercices"],
-  "Systèmes d’information": ["Page 1 : Concepts","Page 2 : Bases de données","Page 3 : Réseaux","Page 4 : Gestion","Page 5 : Exercices"],
-  "Architecture des ordinateurs": ["Page 1 : Processeurs","Page 2 : Mémoire","Page 3 : Entrées/Sorties","Page 4 : Bus","Page 5 : Exercices"]
+"Théorie des graphes":["Intro","Types de graphes","Parcours et algos","Arbres et Dijkstra","Exercices"],
+"ASD3":["Structures de données","Tri","Complexité","Recherche & Graphes","Exercices"],
+"Méthodes numériques":["Interpolation","Equations","Intégration","Systèmes linéaires","Exercices"],
+"Logique mathématique":["Propositions","Tables de vérité","Déduction","Booléenne","Exercices"],
+"Systèmes d’information":["Bases SI","SQL","Réseaux","Gestion","Exercices"],
+"Architecture des ordinateurs":["Processeur","Bus","Cache","Microprogrammes","Exercices"],
+"Analyse 2":["Limites","Dérivées","Intégrales","Séries","Exercices"],
+"Programmation C":["Bases","Boucles","Tableaux & fonctions","Pointeurs & structures","Exercices"],
+"Système numérique":["Combinatoire","Circuits","Karnaugh","Analyse","Exercices"],
+"Base de données":["Relationnel","SQL","Normalisation","Transactions","Exercices"],
+"Intelligence artificielle":["Intro IA","Recherche","Supervisé","Réseaux","Exercices"],
+"Anglais technique":["Vocabulaire","Lecture","Rédaction","Compréhension","Exercices"]
 };
 
 let currentSemester=null;
+let currentModule=null;
 
-// Navigation
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// Sélection du semestre
 function selectSemester(sem){
   currentSemester=sem;
-  const moduleList = document.getElementById('module-list');
-  moduleList.innerHTML = '';
+  const moduleList=document.getElementById('module-list');
+  moduleList.innerHTML='';
   Object.keys(modules).forEach(m=>{
-    const div = document.createElement('div');
+    const div=document.createElement('div');
     div.className='list-item';
-    div.textContent = m;
-    div.onclick = ()=> showPages(m);
+    div.textContent=m;
+    div.onclick=()=>showPages(m);
     moduleList.appendChild(div);
   });
   showScreen('module');
 }
 
-// Affichage des pages
 function showPages(moduleName){
-  document.getElementById('module-title').textContent = moduleName;
-  const pageList = document.getElementById('page-list');
-  pageList.innerHTML = '';
+  currentModule=moduleName;
+  document.getElementById('module-title').textContent=moduleName;
+  const pageList=document.getElementById('page-list');
+  pageList.innerHTML='';
   modules[moduleName].forEach(p=>{
-    const div = document.createElement('div');
+    const div=document.createElement('div');
     div.className='page';
-    div.textContent = p;
+    div.textContent=p;
     pageList.appendChild(div);
   });
   showScreen('pages');
 }
 
+// Simule le paiement du quiz
+function payQuiz(){
+  if(confirm("Payer 200 DA pour accéder au quiz ?")){
+    alert("Paiement effectué ✅\nQuiz accessible !");
+    // Ici tu pourrais rediriger vers le quiz
+  }
+}
+
 // Service Worker pour PWA
-if ('serviceWorker' in navigator){
+if('serviceWorker' in navigator){
   navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-    const cacheName="flash-cours-v1";
+    const cacheName="flash-cours-v3";
     const filesToCache=["/"];
     self.addEventListener("install", e=>{e.waitUntil(caches.open(cacheName).then(c=>c.addAll(filesToCache)))});
     self.addEventListener("fetch", e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});
@@ -252,5 +275,4 @@ if ('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-
 
