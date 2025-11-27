@@ -1,278 +1,305 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flash Cours DZ</title>
-
-<meta name="theme-color" content="#bb33ff">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<style>
-:root{
-  --bg:#1c0033;
-  --card:#1a002d;
-  --accent:#bb33ff;
-  --accent-dark:#6a00ff;
-  --hover:#9a00cc;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:'Inter', sans-serif;
-  background: linear-gradient(270deg,#1c0033,#330066,#1c0033);
-  background-size:600% 600%;
-  animation: gradientBG 15s ease infinite;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  overflow:hidden;
-}
-@keyframes gradientBG{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-#app{
-  width:100%; max-width:420px; padding-bottom:80px;
-}
-header{text-align:center;margin:12px 0;}
-h1{
-  margin:0;
-  font-size:2rem;
-  text-shadow:0 4px 12px rgba(0,0,0,0.7);
-  background: linear-gradient(90deg, #bb33ff, #6a00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.screen{
-  display:none;
-  opacity:0;
-  transform:translateY(30px) scale(0.95);
-  transition:0.5s;
-}
-.screen.active{
-  display:block;
-  opacity:1;
-  transform:translateY(0) scale(1);
-}
-.menu-box{
-  background:var(--card);
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  box-shadow:0 8px 25px rgba(0,0,0,0.8);
-  animation: fadeIn 0.8s ease;
-}
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
-}
-.btn{
-  display:block;
-  width:80%;
-  max-width:220px;
-  margin:15px auto;
-  padding:16px 20px;
-  border-radius:16px;
-  background: linear-gradient(90deg,var(--accent), var(--accent-dark));
-  color:#fff;
-  font-weight:700;
-  border:none;
-  cursor:pointer;
-  font-size:1.1rem;
-  transition: all 0.3s ease;
-  box-shadow:0 6px 18px rgba(0,0,0,0.7);
-}
-.btn:hover{
-  transform:scale(1.08);
-  background:linear-gradient(90deg,var(--hover), var(--accent-dark));
-  box-shadow:0 8px 22px rgba(0,0,0,0.85);
-}
-.list-item{
-  background:rgba(255,255,255,0.05);
-  margin:12px 0;
-  padding:16px;
-  border-radius:16px;
-  cursor:pointer;
-  transition: all 0.3s ease;
-  box-shadow:0 3px 12px rgba(0,0,0,0.5);
-  backdrop-filter:blur(3px);
-}
-.list-item:hover{
-  background:rgba(187,51,255,0.25);
-  transform:translateX(8px);
-  box-shadow:0 6px 18px rgba(187,51,255,0.6);
-}
-.back-btn{
-  margin-top:14px;
-  display:inline-block;
-  color:var(--accent);
-  cursor:pointer;
-  font-weight:700;
-  transition:0.3s;
-}
-.back-btn:hover{
-  color:var(--hover);
-  text-decoration:underline;
-}
-.page{
-  background:rgba(0,0,0,0.2);
-  margin:12px 0;
-  padding:14px;
-  border-radius:12px;
-  text-align:left;
-  line-height:1.4rem;
-}
-.quiz-btn{
-  margin:10px 0;
-  display:block;
-  background:linear-gradient(90deg,#ff6600,#ff3300);
-  padding:12px 16px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:700;
-  color:#fff;
-  transition:0.3s;
-}
-.quiz-btn:hover{
-  transform:scale(1.05);
-  background:linear-gradient(90deg,#ff3300,#ff6600);
-}
-.pub{
-  position:fixed;
-  bottom:20px;
-  width:100%;
-  max-width:420px;
-  text-align:center;
-  padding:10px;
-  background:rgba(255,255,255,0.08);
-  color:#fff;
-  font-size:0.8rem;
-  box-shadow:0 -2px 12px rgba(0,0,0,0.5);
-  border-radius:14px;
-  backdrop-filter:blur(6px);
-  z-index:100;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <title>Ilyes' Adventure: JS Edition</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #000; 
+            overflow: hidden; 
+            /* S'assurer que le jeu prend toute la place sur mobile */
+            touch-action: none; 
+        }
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
 </head>
 <body>
-<div id="app">
-<header><h1>Mar7ba bikom</h1></header>
 
-<section id="home" class="screen active">
-  <div class="menu-box">
-    <button class="btn" onclick="showScreen('semester')">Commencer</button>
-  </div>
-</section>
-
-<section id="semester" class="screen">
-  <div class="menu-box">
-    <h2>Choisis le semestre</h2>
-    <div class="list-item" onclick="selectSemester('3')">Semestre 3</div>
-    <div class="list-item" onclick="selectSemester('4')">Semestre 4</div>
-    <div class="back-btn" onclick="showScreen('home')">← Retour</div>
-  </div>
-</section>
-
-<section id="module" class="screen">
-  <div class="menu-box">
-    <h2>Choisis le module</h2>
-    <div id="module-list"></div>
-    <div class="back-btn" onclick="showScreen('semester')">← Retour</div>
-  </div>
-</section>
-
-<section id="pages" class="screen">
-  <div class="menu-box">
-    <h2 id="module-title"></h2>
-    <div id="page-list"></div>
-    <button class="quiz-btn" onclick="payQuiz()">Accéder au quiz (200 DA)</button>
-    <div class="back-btn" onclick="showScreen('module')">← Retour</div>
-  </div>
-</section>
-
-<div class="pub">Développé par Ilyes & Nassim</div>
-</div>
+<div id="game-container"></div>
 
 <script>
-'use strict';
-
-// Modules et pages
-const modules = {
-"Théorie des graphes":["Intro","Types de graphes","Parcours et algos","Arbres et Dijkstra","Exercices"],
-"ASD3":["Structures de données","Tri","Complexité","Recherche & Graphes","Exercices"],
-"Méthodes numériques":["Interpolation","Equations","Intégration","Systèmes linéaires","Exercices"],
-"Logique mathématique":["Propositions","Tables de vérité","Déduction","Booléenne","Exercices"],
-"Systèmes d’information":["Bases SI","SQL","Réseaux","Gestion","Exercices"],
-"Architecture des ordinateurs":["Processeur","Bus","Cache","Microprogrammes","Exercices"],
-"Analyse 2":["Limites","Dérivées","Intégrales","Séries","Exercices"],
-"Programmation C":["Bases","Boucles","Tableaux & fonctions","Pointeurs & structures","Exercices"],
-"Système numérique":["Combinatoire","Circuits","Karnaugh","Analyse","Exercices"],
-"Base de données":["Relationnel","SQL","Normalisation","Transactions","Exercices"],
-"Intelligence artificielle":["Intro IA","Recherche","Supervisé","Réseaux","Exercices"],
-"Anglais technique":["Vocabulaire","Lecture","Rédaction","Compréhension","Exercices"]
+// --- CONFIGURATION DU JEU ---
+const config = {
+    type: Phaser.AUTO,
+    // La taille du jeu sera mise à l'échelle pour s'adapter à l'écran mobile
+    width: 800,
+    height: 600,
+    parent: 'game-container',
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 1200 }, // Gravité adaptée pour Phaser
+            debug: false // Mettre à true pour voir les hitboxes
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
 };
 
-let currentSemester=null;
-let currentModule=null;
+const game = new Phaser.Game(config);
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// --- CONSTANTES ---
+const PLAYER_SPEED = 300;
+const JUMP_FORCE = 650;
+const DOUBLE_JUMP_FORCE = 550;
+const MAX_LEVEL_X = 5000; // Limite du monde (5000 pixels)
+
+let player;
+let platforms;
+let orbs;
+let cursors;
+let score = 0;
+let scoreText;
+let doubleJumpAvailable = true;
+let isGameOver = false;
+let gameOverText;
+
+// Variables pour les contrôles tactiles (pour iPhone/mobile)
+let buttonLeft, buttonRight, buttonJump;
+
+// --- PRÉCHARGEMENT ---
+function preload() {
+    // Les sprites sont créés par Graphics (formes simples)
 }
 
-function selectSemester(sem){
-  currentSemester=sem;
-  const moduleList=document.getElementById('module-list');
-  moduleList.innerHTML='';
-  Object.keys(modules).forEach(m=>{
-    const div=document.createElement('div');
-    div.className='list-item';
-    div.textContent=m;
-    div.onclick=()=>showPages(m);
-    moduleList.appendChild(div);
-  });
-  showScreen('module');
+// --- CRÉATION DES ÉLÉMENTS DU JEU ---
+function create() {
+    this.cameras.main.setBackgroundColor('#181828'); // Fond Nuit
+    
+    // Création de textures simples pour les plateformes et l'orbe
+    const platform_gfx = this.make.graphics().fillStyle(0x404040).fillRect(0, 0, 100, 20).generateTexture('platform', 100, 20);
+    const orb_gfx = this.make.graphics().fillStyle(0xFFD700).fillCircle(10, 10, 10).generateTexture('orb', 20, 20);
+    // Texture joueur (carré bleu néon)
+    const player_gfx = this.make.graphics().fillStyle(0x00FFFF).fillRect(0, 0, 30, 50).generateTexture('player_tex', 30, 50);
+
+    // 2. PLATEFORMES ET MONDE
+    platforms = this.physics.add.staticGroup();
+    orbs = this.physics.add.group();
+
+    // --- Génération du Niveau ---
+    let cursorX = 0;
+    const chunkWidth = 800;
+    while (cursorX < MAX_LEVEL_X) {
+        if (cursorX === 0) {
+            // Plateforme de départ
+            platforms.create(0, 550, 'platform').setOrigin(0, 0).setDisplaySize(400, 50).refreshBody();
+        } else {
+            // Génération aléatoire
+            const y = Phaser.Math.Between(350, 550);
+            const w = Phaser.Math.Between(80, 200);
+            const x = cursorX + Phaser.Math.Between(150, 300);
+            const p = platforms.create(x, y, 'platform').setOrigin(0, 0).setDisplaySize(w, 20).refreshBody();
+            
+            // Ajouter Orbe au-dessus de la plateforme
+            if (Phaser.Math.Between(0, 10) > 4) { // 60% de chance d'avoir une orbe
+                 orbs.create(p.x + p.displayWidth / 2, p.y - 30, 'orb').setCircle(10).setImmovable(true).body.allowGravity = false;
+            }
+        }
+        cursorX += chunkWidth;
+    }
+    
+    // 3. JOUEUR (Ilyes)
+    player = this.physics.add.sprite(100, 450, 'player_tex');
+    player.setBounce(0.1);
+    player.setCollideWorldBounds(false); 
+    player.body.setSize(20, 40); 
+    player.body.setOffset(5, 5);
+    
+    // 4. CAMÉRA
+    this.cameras.main.setBounds(0, 0, MAX_LEVEL_X, 600);
+    this.cameras.main.startFollow(player, true, 0.08, 0.08); // Suivi fluide
+
+    // 5. HUD et Score
+    scoreText = this.add.text(16, 16, 'Orbes: 0', { fontSize: '32px', fill: '#FFF', fontStyle: 'bold' }).setScrollFactor(0);
+    
+    // Texte Game Over (caché au départ)
+    gameOverText = this.add.text(config.width / 2, config.height / 2, 'GAME OVER\n(Touche R ou Recharger)', {
+        fontSize: '48px',
+        fill: '#F00',
+        backgroundColor: '#0008',
+        align: 'center'
+    }).setOrigin(0.5).setScrollFactor(0).setVisible(false);
+
+
+    // 6. COLLISIONS
+    this.physics.add.collider(player, platforms, onPlatformHit);
+    this.physics.add.overlap(player, orbs, collectOrb, null, this);
+
+    // 7. INPUTS CLAVIER
+    cursors = this.input.keyboard.createCursorKeys();
+    
+    // R pour Recommencer
+    this.input.keyboard.on('keydown-R', () => {
+        if (isGameOver) {
+            this.scene.restart();
+        }
+    });
+
+    // 8. CONTRÔLES TACTILES (Overlay mobile)
+    createMobileControls.call(this);
 }
 
-function showPages(moduleName){
-  currentModule=moduleName;
-  document.getElementById('module-title').textContent=moduleName;
-  const pageList=document.getElementById('page-list');
-  pageList.innerHTML='';
-  modules[moduleName].forEach(p=>{
-    const div=document.createElement('div');
-    div.className='page';
-    div.textContent=p;
-    pageList.appendChild(div);
-  });
-  showScreen('pages');
+// --- LOGIQUE DE JEU ---
+function collectOrb(player, orb) {
+    orb.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Orbes: ' + score);
+    // Particules
+    const particles = this.add.particles('orb');
+    particles.createEmitter({
+        speed: 100,
+        lifespan: 500,
+        gravityY: 50,
+        quantity: 5,
+        scale: { start: 0.5, end: 0 },
+        x: orb.x,
+        y: orb.y
+    });
 }
 
-// Simule le paiement du quiz
-function payQuiz(){
-  if(confirm("Payer 200 DA pour accéder au quiz ?")){
-    alert("Paiement effectué ✅\nQuiz accessible !");
-    // Ici tu pourrais rediriger vers le quiz
-  }
+function onPlatformHit(player, platform) {
+    if (player.body.touching.down) {
+        doubleJumpAvailable = true; // Réactive le double saut
+    }
 }
 
-// Service Worker pour PWA
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-    const cacheName="flash-cours-v3";
-    const filesToCache=["/"];
-    self.addEventListener("install", e=>{e.waitUntil(caches.open(cacheName).then(c=>c.addAll(filesToCache)))});
-    self.addEventListener("fetch", e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});
-  `],{type:'application/javascript'})));
+function triggerGameOver(scene) {
+    isGameOver = true;
+    scene.physics.pause();
+    player.setTint(0xff0000); // Devient rouge
+    gameOverText.setVisible(true);
+}
+
+// --- CRÉATION DES BOUTONS TACTILES POUR MOBILE ---
+function createMobileControls() {
+    // Les boutons restent fixes à l'écran (setScrollFactor(0))
+    const btnSize = 80;
+    const btnAlpha = 0.6;
+    const margin = 20;
+
+    // Bouton Gauche
+    buttonLeft = this.add.text(margin, config.height - btnSize - margin, ' ◀ ', {
+        fontSize: '48px',
+        backgroundColor: '#333',
+        padding: { x: 10, y: 10 },
+        fontStyle: 'bold'
+    }).setScrollFactor(0).setAlpha(btnAlpha).setInteractive();
+
+    // Bouton Droit
+    buttonRight = this.add.text(margin + btnSize + 10, config.height - btnSize - margin, ' ▶ ', {
+        fontSize: '48px',
+        backgroundColor: '#333',
+        padding: { x: 10, y: 10 },
+        fontStyle: 'bold'
+    }).setScrollFactor(0).setAlpha(btnAlpha).setInteractive();
+
+    // Bouton Saut
+    buttonJump = this.add.text(config.width - 150, config.height - btnSize - margin, ' SAUT ', {
+        fontSize: '36px',
+        backgroundColor: '#00F',
+        padding: { x: 10, y: 10 },
+        fontStyle: 'bold'
+    }).setScrollFactor(0).setAlpha(btnAlpha).setInteractive();
+
+    // --- Gestion des événements tactiles ---
+    
+    // Saut (Doit se déclencher à l'appui)
+    buttonJump.on('pointerdown', () => {
+        if (isGameOver) return;
+        if (player.body.touching.down) {
+            player.setVelocityY(-JUMP_FORCE);
+        } else if (doubleJumpAvailable) {
+            player.setVelocityY(-DOUBLE_JUMP_FORCE);
+            doubleJumpAvailable = false;
+        }
+    });
+
+    // Mouvement Gauche
+    buttonLeft.isDown = false;
+    buttonLeft.on('pointerdown', () => buttonLeft.isDown = true);
+    buttonLeft.on('pointerup', () => buttonLeft.isDown = false);
+    buttonLeft.on('pointerout', () => buttonLeft.isDown = false);
+
+    // Mouvement Droit
+    buttonRight.isDown = false;
+    buttonRight.on('pointerdown', () => buttonRight.isDown = true);
+    buttonRight.on('pointerup', () => buttonRight.isDown = false);
+    buttonRight.on('pointerout', () => buttonRight.isDown = false);
+}
+
+
+// --- BOUCLE DE JEU (LOGIQUE DE MISE À JOUR) ---
+function update() {
+    if (isGameOver) {
+        return;
+    }
+    
+    // Logique de mouvement horizontale
+    let moving = false;
+    
+    // Déplacement Clavier
+    if (cursors.left.isDown) {
+        player.setVelocityX(-PLAYER_SPEED);
+        moving = true;
+    } else if (cursors.right.isDown) {
+        player.setVelocityX(PLAYER_SPEED);
+        moving = true;
+    } 
+    
+    // Déplacement Tactile (Priorité aux boutons s'ils sont pressés)
+    if (buttonLeft.isDown) {
+        player.setVelocityX(-PLAYER_SPEED);
+        moving = true;
+    } else if (buttonRight.isDown) {
+        player.setVelocityX(PLAYER_SPEED);
+        moving = true;
+    } 
+
+    if (!moving) {
+        player.setVelocityX(0); // Arrêt si aucune touche/bouton n'est pressé
+    }
+    
+    // Saut Clavier
+    if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+        if (player.body.touching.down) {
+            player.setVelocityY(-JUMP_FORCE);
+        } else if (doubleJumpAvailable) {
+            player.setVelocityY(-DOUBLE_JUMP_FORCE);
+            doubleJumpAvailable = false;
+        }
+    }
+
+    // Gestion de la mort (chute ou fin du monde X)
+    // 1. Chute dans le vide
+    if (player.y > config.height + 100) {
+        triggerGameOver(this);
+    } 
+    // 2. Fin du monde
+    else if (player.x > MAX_LEVEL_X) {
+        // Condition de victoire : vous avez atteint la fin ! (À implémenter)
+        player.setVelocityX(0);
+        player.setVelocityY(0);
+        this.add.text(player.x - 200, 300, 'VICTOIRE !', { fontSize: '64px', fill: '#0F0' }).setScrollFactor(0.5);
+        isGameOver = true;
+    }
 }
 </script>
 </body>
 </html>
-
